@@ -3,20 +3,26 @@
 
 module Lira.Backends.Solidity.SolCompiler where
 
-import NeatInterpolation
-import Data.Text (Text)
+import           NeatInterpolation
+import           Data.Text (Text)
+import           Control.Monad.Reader
+import           Lira.Contract.Intermediate
 
-assemble :: Text
-assemble = contract
+assemble :: IntermediateContract -> Text
+assemble intermediateContract = contract
 
 headContract :: Text
-headContract = [text|test1|]
+headContract = [text| |]
 
 activate :: Text
-activate = [text|test2|]
+activate = [text|function activate() {
+
+}|]
 
 execute :: Text
-execute = [text|test3|]
+execute = [text|function execute() {
+
+}|]
 
 contract :: Text
 contract = [text|pragma solidity ^0.6.4;

@@ -26,7 +26,7 @@ pragma solidity ^0.6.4;
 
 
 contract ifWithin {
-    uint128 _memoryExpressionRefs;
+    uint256 _memoryExpressionRefs;
     uint _timeInitiated;
     uint _timeWithin;
     uint _time;

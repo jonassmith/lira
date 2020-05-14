@@ -25,7 +25,7 @@ module Lira.Backends.Solidity where
 import           Data.Text (Text)
 import qualified Data.Text as Text
 
-import           Lira.Backends.Solidity.EvmCompiler (assemble)
+import           Lira.Backends.Solidity.SolCompiler (assemble)
 import           Lira.Backends.IntermediateCompiler (intermediateCompile)
 import           Lira.Parser (parseContract)
 import           Lira.TypeChecker (typeCheck)
