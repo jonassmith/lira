@@ -25,6 +25,7 @@ dependencies:
   - evm-opcodes
   - optparse-applicative
   - filepath
+  - raw-strings-qq
 
 library:
   source-dirs: src

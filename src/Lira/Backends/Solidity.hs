@@ -26,7 +26,6 @@ import           Data.Text (Text)
 import qualified Data.Text as Text
 
 import           Lira.Backends.Solidity.EvmCompiler (assemble)
-import           Lira.Backends.Solidity.Abi (encodeUtf8, abiDefinition)
 import           Lira.Backends.IntermediateCompiler (intermediateCompile)
 import           Lira.Parser (parseContract)
 import           Lira.TypeChecker (typeCheck)
@@ -35,6 +34,4 @@ compile :: FilePath -> Text -> Either Text [(FilePath, Text)]
 compile srcFile srcText = do
   contract <- parseContract srcFile srcText
   typeCheck contract
-  pure [ ("file.abi", encodeUtf8 abiDefinition)
-       , ("file.bin", assemble (intermediateCompile contract))
-       ]
+  pure [ ("file.sol", assemble (intermediateCompile contract)) ]
