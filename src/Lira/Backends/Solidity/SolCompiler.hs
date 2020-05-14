@@ -1,22 +1,32 @@
+module Lira.Backends.Solidity.SolCompiler where
+
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
 
-import Text.RawString.QQ
+import Data.Text (Text)
+import Text.RawString.QQ (r)
+import NeatInterpolation (text)
 
-head :: String
-head = [|test|]
+assemble :: IntermediateContract -> Text
+assemble = contract
 
-activate :: String
-activate = [|test|]
+head :: Text
+head = [r|test1|]
 
-execute :: String
-execute = [|test|]
+activate :: Text
+activate = [r|test2|]
 
-contract :: String
-contract = [r|<HTML>
-<HEAD>
-<TITLE>Auto-generated html formated source</TITLE>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
-</HEAD>
-<BODY LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff">
-<P> </P>
-<PRE>|]
+execute :: Text
+execute = [r|test3|]
+
+contract :: Text
+contract = [r|pragma solidity ^0.6.4;
+
+contract Contract1 {
+  ${head}
+
+  ${activate}
+
+  ${execute}
+  }
+}|]
