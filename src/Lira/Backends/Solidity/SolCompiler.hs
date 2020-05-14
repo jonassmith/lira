@@ -1,7 +1,7 @@
-module Lira.Backends.Solidity.SolCompiler where
-
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
+
+module Lira.Backends.Solidity.SolCompiler where
 
 import NeatInterpolation
 import Data.Text (Text)
@@ -9,8 +9,8 @@ import Data.Text (Text)
 assemble :: Text
 assemble = contract
 
-head :: Text
-head = [text|test1|]
+headContract :: Text
+headContract = [text|test1|]
 
 activate :: Text
 activate = [text|test2|]
@@ -22,7 +22,7 @@ contract :: Text
 contract = [text|pragma solidity ^0.6.4;
 
 contract Contract1 {
-  $head
+  $headContract
 
   $activate
 
