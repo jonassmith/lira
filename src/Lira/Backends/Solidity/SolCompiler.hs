@@ -10,16 +10,16 @@ assemble :: Text
 assemble = contract
 
 head :: Text
-head = [trimming|test1|]
+head = [text|test1|]
 
 activate :: Text
-activate = [trimming|test2|]
+activate = [text|test2|]
 
 execute :: Text
-execute = [trimming|test3|]
+execute = [text|test3|]
 
 contract :: Text
-contract = [trimming|pragma solidity ^0.6.4;
+contract = [text|pragma solidity ^0.6.4;
 
 contract Contract1 {
   $head
