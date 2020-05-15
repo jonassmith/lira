@@ -27,6 +27,7 @@ dependencies:
   - filepath
   - raw-strings-qq
   - neat-interpolation
+  - text-conversions
 
 library:
   source-dirs: src
