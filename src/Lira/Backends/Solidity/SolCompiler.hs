@@ -23,14 +23,14 @@ activate :: IntermediateContract -> Text
 activate ic = transferCalls' (getTransferCalls ic)
   where
     transferCalls' :: [TransferCall] -> Text
-    transferCalls' text = ""
+    transferCalls' text = "function activate() {\n"
     transferCalls' (tc:tcs) = [text|common_token.transferFrom(${_from tc}, address(this), ${_maxAmount tc})\n|] <> transferCalls' tcs
 
 execute :: IntermediateContract -> Text
 execute ic = transferCalls' (getTransferCalls ic)
   where
     transferCalls' :: [TransferCall] -> Text
-    transferCalls' text = ""
+    transferCalls' text = "function execute() {\n"
     transferCalls' (tc:tcs) = [text|common_token.transfer(${_to tc}, ${ppSolExpr (_amount tc)})\n|] <> transferCalls' tcs
 
 ppSolExpr :: Expr -> Text
@@ -73,8 +73,11 @@ contract ic = [text|pragma solidity ^0.6.4;
 contract Contract1 {
   $headContract
 
-  ${activate ic}
-
-  ${execute ic}
+  $activatePortion
+  }
+  $executePortion
   }
 }|]
+  where
+    activatePortion = activate ic
+    executePortion = execute ic
