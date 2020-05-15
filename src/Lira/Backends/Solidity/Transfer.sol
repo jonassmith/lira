@@ -39,34 +39,34 @@ contract ifWithin {
     function execute() {
 
 
-        if (_timeInitiated + _timeWithin>= now) {
-            //  The new plan is to use two bits to set the value of the memExp:
-            //  one if the memExp is evaluated to true, and one for false:
-            //  The empty value 00 would then indicate that the value of this
-            //  memExp has not yet been determined. The value 11 would be an invalid
-            //  value, 01 would be false, and 10 true.
+if (_timeInitiated + _timeWithin >= now) {
+    //  The new plan is to use two bits to set the value of the memExp:
+    //  one if the memExp is evaluated to true, and one for false:
+    //  The empty value 00 would then indicate that the value of this
+    //  memExp has not yet been determined. The value 11 would be an invalid
+    //  value, 01 would be false, and 10 true.
 
-            // Check if exp is true
-            if(exp &&
-              // and has not already been true
-              _memoryExpressionRefs & (1 << ((exp.count - 1) * 2)) == 1 &&
-              _memoryExpressionRefs & (1 << ((exp.count - 1) * 2 - 1)) == 0) {
-                _memoryExpressionRefs.push(0x3 ** (2 * exp.count));
-                {c1}
-            }
-            // Check if exp is false
-            if(!exp  &&
-              // And has not already been true
-              _memoryExpressionRefs & (1 << ((exp.count - 1) * 2)) == 0 &&
-              _memoryExpressionRefs & (1 << ((exp.count - 1) * 2 - 1)) == 1) {
-                uint256 tempMemExpRefs;
-                tempMemExpRefs = 0x1 << (2 * exp.count);
-                _memoryExpressionRefs = _memoryExpressionRefs | tempMemExpRefs;
-            }
-        }
-        else {
-          {c2}
-        }
+    // Check if exp is true
+    if(exp &&
+      // and has not already been true
+      _memoryExpressionRefs & (1 << ((exp.count - 1) * 2)) == 1 &&
+      _memoryExpressionRefs & (1 << ((exp.count - 1) * 2 - 1)) == 0) {
+        _memoryExpressionRefs.push(0x3 ** (2 * exp.count));
+        {c1}
+    }
+    // Check if exp is false
+    if(!exp  &&
+      // And has not already been true
+      _memoryExpressionRefs & (1 << ((exp.count - 1) * 2)) == 0 &&
+      _memoryExpressionRefs & (1 << ((exp.count - 1) * 2 - 1)) == 1) {
+        uint256 tempMemExpRefs;
+        tempMemExpRefs = 0x1 << (2 * exp.count);
+        _memoryExpressionRefs = _memoryExpressionRefs | tempMemExpRefs;
+    }
+}
+else {
+  {c2}
+}
 
     }
 }

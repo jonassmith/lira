@@ -7,31 +7,37 @@ import           NeatInterpolation
 import           Data.Text (Text)
 import           Control.Monad.Reader
 import           Lira.Contract.Intermediate
+import           Lira.TypeChecker
+import           Control.Monad
 
 assemble :: IntermediateContract -> Text
-assemble intermediateContract = contract
+assemble intermediateContract = contract intermediateContract
 
 headContract :: Text
 headContract = [text| |]
 
-activate :: Text
-activate = [text|function activate() {
+activate :: IntermediateContract -> Text
+activate ic = transferCalls' (getTransferCalls ic)
+  where
+    transferCalls' :: [TransferCall] -> Text
+    transferCalls' text = ""
+    transferCalls' (tc:tcs) = [text|common_token.transferFrom(${_from tc}, address(this), ${_amount tc})\n|] <> transferCalls' tcs
 
-}|]
+execute :: IntermediateContract -> Text
+execute ic = transferCalls' (getTransferCalls ic)
+  where
+    transferCalls' :: [TransferCall] -> Text
+    transferCalls' text = ""
+    transferCalls' (tc:tcs) = [text|common_token.transfer(${_to tc}, ${_amount tc})\n|] <> transferCalls' tcs
 
-execute :: Text
-execute = [text|function execute() {
-
-}|]
-
-contract :: Text
-contract = [text|pragma solidity ^0.6.4;
+contract :: IntermediateContract -> Text
+contract ic = [text|pragma solidity ^0.6.4;
 
 contract Contract1 {
   $headContract
 
-  $activate
+  ${activate ic}
 
-  $execute
+  ${execute ic}
   }
 }|]
