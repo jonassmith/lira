@@ -55,7 +55,7 @@ ppSolExpr (LtOrEqExp e1 e2) = "(" <> ppSolExpr e1 <> " >= " <> ppSolExpr e2 <> "
 ppSolExpr (NotExp e1) = "(!" <> ppSolExpr e1 <> ")"
 ppSolExpr (AndExp e1 e2) = "(" <> ppSolExpr e1 <> " && " <> ppSolExpr e2 <> ")"
 ppSolExpr (OrExp e1 e2) = "(" <> ppSolExpr e1 <> " || " <> ppSolExpr e2 <> ")"
-ppSolExpr (IfExp e1 e2 e3) = "(if(" <> ppSolExpr e1 <> "){" <> ppSolExpr e2 <> "} else {" <> ppSolExpr e3 <> "})"
+ppSolExpr (IfExp e1 e2 e3) = "((" <> ppSolExpr e1 <> ") ? (" <> ppSolExpr e2 <> ") : (" <> ppSolExpr e2 <> "))"
 
 ppSolLiteral :: Literal -> Text
 ppSolLiteral (IntVal e1) = convertText (show e1)
