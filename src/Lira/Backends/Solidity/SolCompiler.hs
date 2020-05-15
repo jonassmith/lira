@@ -20,18 +20,24 @@ headContract :: Text
 headContract = [text| |]
 
 activate :: IntermediateContract -> Text
-activate ic = transferCalls' (getTransferCalls ic)
+activate ic = "function activate() {\n" <> transferCalls' (getTransferCalls ic)
   where
     transferCalls' :: [TransferCall] -> Text
-    transferCalls' text = "function activate() {\n"
-    transferCalls' (tc:tcs) = [text|common_token.transferFrom(${_from tc}, address(this), ${_maxAmount tc})\n|] <> transferCalls' tcs
+    transferCalls' [] = ""
+    transferCalls' (tc:tcs) = [text|common_token.transferFrom($fromPortion, address(this), $maxAmountPortion)|] <> "\n" <> transferCalls' tcs
+      where
+        fromPortion = Text.pack (show (_from tc))
+        maxAmountPortion = Text.pack (show (_maxAmount tc))
 
 execute :: IntermediateContract -> Text
-execute ic = transferCalls' (getTransferCalls ic)
+execute ic = "function execute() {\n" <> transferCalls' (getTransferCalls ic)
   where
     transferCalls' :: [TransferCall] -> Text
-    transferCalls' text = "function execute() {\n"
-    transferCalls' (tc:tcs) = [text|common_token.transfer(${_to tc}, ${ppSolExpr (_amount tc)})\n|] <> transferCalls' tcs
+    transferCalls' [] = ""
+    transferCalls' (tc:tcs) = [text|common_token.transfer($toPortion, $amountPortion)|] <> "\n" <> transferCalls' tcs
+      where
+        toPortion = Text.pack (show (_to tc))
+        amountPortion = ppSolExpr (_amount tc)
 
 ppSolExpr :: Expr -> Text
 ppSolExpr (Lit e1) = ppSolLiteral e1
