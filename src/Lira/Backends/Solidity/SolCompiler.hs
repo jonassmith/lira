@@ -20,7 +20,7 @@ headContract :: Text
 headContract = [text| |]
 
 activate :: IntermediateContract -> Text
-activate ic = "function activate() {\n" <> transferCalls' (getTransferCalls ic)
+activate ic = "function activate() {\n" <> transferCalls' (getTransferCalls ic) <> "}"
   where
     transferCalls' :: [TransferCall] -> Text
     transferCalls' [] = ""
@@ -30,7 +30,7 @@ activate ic = "function activate() {\n" <> transferCalls' (getTransferCalls ic)
         maxAmountPortion = Text.pack (show (_maxAmount tc))
 
 execute :: IntermediateContract -> Text
-execute ic = "function execute() {\n" <> transferCalls' (getTransferCalls ic)
+execute ic = "function execute() {\n" <> transferCalls' (getTransferCalls ic) <> "}"
   where
     transferCalls' :: [TransferCall] -> Text
     transferCalls' [] = ""
@@ -41,10 +41,14 @@ execute ic = "function execute() {\n" <> transferCalls' (getTransferCalls ic)
 
 ppSolExpr :: Expr -> Text
 ppSolExpr (Lit e1) = ppSolLiteral e1
+-- TODO Her er et problem jf. SMS fra Simon:
+-- Desuden, så er der et problem med min oversættelse af MinExp/MaxExp, som jeg bevidst udelod. Hvad hvis du skriver fx ‘max(obs(...), 0)’ -- skal den så oversætte til noget solidity som kalder observable to gange?
 ppSolExpr (MinExp e1 e2) =
   let s1 = ppSolExpr e1
       s2 = ppSolExpr e2
   in Text.concat [ "((", s1, " < ", s2, ") ? (", s1, ") : (", s2, "))" ]
+-- TODO Her er et problem jf. SMS fra Simon
+-- Desuden, så er der et problem med min oversættelse af MinExp/MaxExp, som jeg bevidst udelod. Hvad hvis du skriver fx ‘max(obs(...), 0)’ -- skal den så oversætte til noget solidity som kalder observable to gange?
 ppSolExpr (MaxExp e1 e2) =
   let s1 = ppSolExpr e1
       s2 = ppSolExpr e2
@@ -80,9 +84,9 @@ contract Contract1 {
   $headContract
 
   $activatePortion
-  }
+
   $executePortion
-  }
+
 }|]
   where
     activatePortion = activate ic
