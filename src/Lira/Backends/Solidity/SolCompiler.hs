@@ -12,6 +12,7 @@ import           Control.Monad
 import           Lira.Contract
 import qualified Data.Text as Text
 import           Data.Text.Conversions
+import           Debug.Trace (trace)
 
 assemble :: IntermediateContract -> Text
 assemble intermediateContract = contract intermediateContract
@@ -24,7 +25,7 @@ activate ic = "function activate() {\n" <> transferCalls' (getTransferCalls ic) 
   where
     transferCalls' :: [TransferCall] -> Text
     transferCalls' [] = ""
-    transferCalls' (tc:tcs) = [text|common_token.transferFrom($fromPortion, address(this), $maxAmountPortion)|] <> "\n" <> transferCalls' tcs
+    transferCalls' (tc:tcs) = [text|common_token.transferFrom($fromPortion, address(this), $maxAmountPortion);|] <> transferCalls' tcs
       where
         fromPortion = Text.pack (show (_from tc))
         maxAmountPortion = Text.pack (show (_maxAmount tc))
@@ -34,7 +35,7 @@ execute ic = "function execute() {\n" <> transferCalls' (getTransferCalls ic) <>
   where
     transferCalls' :: [TransferCall] -> Text
     transferCalls' [] = ""
-    transferCalls' (tc:tcs) = [text|common_token.transfer($toPortion, $amountPortion)|] <> "\n" <> transferCalls' tcs
+    transferCalls' (tc:tcs) = [text|common_token.transfer($toPortion, $amountPortion);|] <> transferCalls' tcs
       where
         toPortion = Text.pack (show (_to tc))
         amountPortion = ppSolExpr (_amount tc)
