@@ -12,7 +12,6 @@ import           Control.Monad
 import           Lira.Contract
 import qualified Data.Text as Text
 import           Data.Text.Conversions
-import           Debug.Trace (trace)
 
 assemble :: IntermediateContract -> Text
 assemble intermediateContract = contract intermediateContract
@@ -31,25 +30,23 @@ activate ic = "function activate() {\n" <> transferCalls' (getTransferCalls ic) 
         maxAmountPortion = Text.pack (show (_maxAmount tc))
 
 execute :: IntermediateContract -> Text
-execute ic = "function execute() {\n" <> transferCalls' (getTransferCalls ic) <> "}"
+execute ic = "function execute() {\n" <>
+    transferCalls' (getTransferCalls ic) <> "}"
   where
     transferCalls' :: [TransferCall] -> Text
     transferCalls' [] = ""
-    transferCalls' (tc:tcs) = [text|common_token.transfer($toPortion, $amountPortion);|] <> transferCalls' tcs
+    transferCalls' (tc:tcs) = [text|common_token.transfer($toPortion,
+        $amountPortion);|] <> transferCalls' tcs
       where
         toPortion = Text.pack (show (_to tc))
         amountPortion = ppSolExpr (_amount tc)
 
 ppSolExpr :: Expr -> Text
 ppSolExpr (Lit e1) = ppSolLiteral e1
--- TODO Her er et problem jf. SMS fra Simon:
--- Desuden, så er der et problem med min oversættelse af MinExp/MaxExp, som jeg bevidst udelod. Hvad hvis du skriver fx ‘max(obs(...), 0)’ -- skal den så oversætte til noget solidity som kalder observable to gange?
 ppSolExpr (MinExp e1 e2) =
   let s1 = ppSolExpr e1
       s2 = ppSolExpr e2
   in Text.concat [ "((", s1, " < ", s2, ") ? (", s1, ") : (", s2, "))" ]
--- TODO Her er et problem jf. SMS fra Simon
--- Desuden, så er der et problem med min oversættelse af MinExp/MaxExp, som jeg bevidst udelod. Hvad hvis du skriver fx ‘max(obs(...), 0)’ -- skal den så oversætte til noget solidity som kalder observable to gange?
 ppSolExpr (MaxExp e1 e2) =
   let s1 = ppSolExpr e1
       s2 = ppSolExpr e2
@@ -71,8 +68,6 @@ ppSolExpr (IfExp e1 e2 e3) = "((" <> ppSolExpr e1 <> ") ? (" <> ppSolExpr e2 <> 
 ppSolLiteral :: Literal -> Text
 ppSolLiteral (IntVal e1) = convertText (show e1)
 ppSolLiteral (BoolVal e1) = boolToString e1
--- TODO: Observerables
--- ppSolLiteral (e1 e2 e3 e4 e5) =
 
 boolToString :: Bool -> Text
 boolToString True = "True"
